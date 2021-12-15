@@ -1,0 +1,88 @@
+name: PHP Style
+
+on:
+  workflow_call:
+    inputs:
+      php_version:
+        required: false
+        type: string
+        default: "7.4"
+
+jobs:
+  php-cs-fixer:
+    name: PHP CS Fixer
+    runs-on: ${{ matrix.operating-system }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        operating-system: ["ubuntu-latest"]
+        php-versions: [{{inputs.php_version}}]
+        phpunit-versions: ["latest"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, intl
+          ini-values: post_max_size=256M, max_execution_time=360
+          tools: php-cs-fixer, cs2pr
+
+      - name: Run php-cs-fixer
+        run: php-cs-fixer fix  --path-mode=intersection --dry-run --format=checkstyle -- $(git diff --name-only --diff-filter=ACMRTUXB origin/$GITHUB_BASE_REF) | cs2pr
+
+  # phpstan:
+  #   name: PHPStan
+  #   runs-on: "ubuntu-latest"
+  #   strategy:
+  #     matrix:
+  #       operating-system: ["ubuntu-latest"]
+  #       php-versions: ["7.4"]
+  #       phpunit-versions: ["latest"]
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2.4.0
+
+  #     - name: Setup PHP
+  #       uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: ${{ matrix.php-versions }}
+  #         extensions: mbstring, intl, opcache
+  #         ini-values: post_max_size=256M, max_execution_time=360
+  #         tools: cs2pr
+  #     - name: Get Composer Cache Directory
+  #       id: composer-cache
+  #       run: |
+  #         echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+  #     - name: Cache Composer Downloads
+  #       uses: actions/cache@v2.1.6
+  #       with:
+  #         path: ${{ steps.composer-cache.outputs.dir }}
+  #         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-composer-
+
+  #     - name: Add HTTP basic auth credentials
+  #       run: echo '${{ secrets.COMPOSER_AUTH_REPO }}' > $GITHUB_WORKSPACE/auth.json
+
+  #     - name: Composer Install
+  #       uses: php-actions/composer@v5
+  #       with:
+  #         command: install
+  #         php_version: 7.4
+  #       env:
+  #         CI: true
+
+  #     - name: Cache PHP dependencies
+  #       uses: actions/cache@v2.1.6
+  #       with:
+  #         path: vendor
+  #         key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+
+  #     - name: Run phpstan
+  #       run: ./vendor/bin/phpstan --error-format=checkstyle $(git diff --name-only --diff-filter=ACMRTUXB origin/$GITHUB_BASE_REF | tr "\n" "")  | cs2pr

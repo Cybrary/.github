@@ -1,0 +1,22 @@
+
+on:
+  workflow_call:
+    inputs:
+      package_name:
+        required: true
+        type: string
+    secrets:
+      repo_tokens:
+        required: true
+
+
+name: release-please
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v2.35
+        with:
+          token: ${{ secrets.repo_tokens }}
+          release-type: simple
+          package-name: api-auth

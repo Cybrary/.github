@@ -18,6 +18,10 @@ on:
         type: string
         required: false
         default: gd zip mcrypt pdo_pgsql
+      install_auth:
+        type: boolean
+        required: false
+        default: false
     secrets:
       COMPOSER_AUTH_REPO:
         required: true
@@ -75,7 +79,7 @@ jobs:
       - name: Migrate
         uses: Cybrary/php-generic-action@main
         with:
-         command: php artisan migrate
+         command: php artisan migrate --seed
          php_extensions: ${{inputs.php_extensions}}
          php_version: ${{inputs.php_version}}
         env:
@@ -85,10 +89,11 @@ jobs:
           DB_SCHEMA: "${{inputs.db_schema}}"
           DB_CONNECTION: "pgsql"
           DB_USERNAME: postgres
-      - name: Seed
+      - name: Install Auth
+        if: ${{inputs.install_auth}}
         uses: Cybrary/php-generic-action@main
         with:
-         command: php artisan db:seed --class=CISeeders
+         command: php artisan passport:install
          php_extensions: ${{inputs.php_extensions}}
          php_version: ${{inputs.php_version}}
         env:

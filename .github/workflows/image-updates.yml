@@ -1,0 +1,25 @@
+name: flux-image-updates Auto-PR
+
+on:
+  workflow_call:
+    secrets:
+      github_token:
+        required: true
+
+jobs:
+  pull-request:
+    name: Open PR to main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.4.0
+        name: checkout
+
+      - uses: repo-sync/pull-request@v2
+        name: pull-request
+        with:
+          destination_branch: "main"
+          pr_title: "feat(pod images): Flux Image Patching"
+          pr_body: "👑 *An automated PR*"
+          pr_reviewer: "@Cybrary/devops"
+          pr_draft: false
+          github_token: ${{ secrets.github_token }}

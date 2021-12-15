@@ -75,7 +75,7 @@ jobs:
       - name: Migrate
         uses: Cybrary/php-generic-action@main
         with:
-         command: php artisan migrate  && ./vendor/bin/phpunit
+         command: php artisan migrate
          php_extensions: ${{inputs.php_extensions}}
          php_version: ${{inputs.php_version}}
         env:
@@ -99,6 +99,7 @@ jobs:
           DB_CONNECTION: "pgsql"
           DB_USERNAME: postgres
       - name: Test
+        uses: Cybrary/php-generic-action@main
         with:
          command: ./vendor/bin/phpunit
          php_extensions: ${{inputs.php_extensions}}

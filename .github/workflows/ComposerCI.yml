@@ -17,7 +17,7 @@ on:
       php_extensions:
         type: string
         required: false
-        default: gd zip mcrypt
+        default: gd zip mcrypt pdo_pgsql
     secrets:
       COMPOSER_AUTH_REPO:
         required: true

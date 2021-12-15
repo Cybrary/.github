@@ -78,7 +78,7 @@ jobs:
           PGPASSWORD: testing123
 
       - name: Artisan, Passport, and phpunit
-        uses: Cybrary/php-php-action@main
+        uses: Cybrary/php-generic-action@main
         with:
          command: php artisan cache:clear && php artisan migrate && php artisan db:seed --class=CISeeders && ./vendor/bin/phpunit
          php_extensions: ${{inputs.php_extensions}}

@@ -19,8 +19,6 @@ on:
         required: false
         default: gd zip mcrypt
     secrets:
-      REPO_TOKENS:
-        required: true
       COMPOSER_AUTH_REPO:
         required: true
 
@@ -45,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
       - name: Add HTTP basic auth credentials
-        run: echo '${{ inputs.COMPOSER_AUTH_REPO }}' > $GITHUB_WORKSPACE/auth.json
+        run: echo '${{ secrets.COMPOSER_AUTH_REPO }}' > $GITHUB_WORKSPACE/auth.json
 
       - name: Composer Install
         uses: php-actions/composer@v6
@@ -58,9 +56,6 @@ jobs:
 
       - name: Set ENV
         run: cp .env.ci .env
-
-      - name: Clear Config
-        run: php artisan config:clear
 
       - name: Create Schema
         run: psql --host 127.0.0.1 --port ${{ job.services.psql.ports['5432'] }} -U postgres -d jenkins_test  -c "CREATE SCHEMA ${{inputs.db_schema}}; GRANT usage on schema courses_prod to postgres; grant create on schema ${{inputs.db_schema}} to postgres;"
@@ -80,7 +75,7 @@ jobs:
       - name: Artisan, Passport, and phpunit
         uses: Cybrary/php-generic-action@main
         with:
-         command: php artisan cache:clear && php artisan migrate && php artisan db:seed --class=CISeeders && ./vendor/bin/phpunit
+         command: php artisan config:clear && php artisan migrate && php artisan db:seed --class=CISeeders && ./vendor/bin/phpunit
          php_extensions: ${{inputs.php_extensions}}
          php_version: ${{inputs.php_version}}
         env:

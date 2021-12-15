@@ -11,14 +11,7 @@ on:
 jobs:
   php-cs-fixer:
     name: PHP CS Fixer
-    runs-on: ${{ matrix.operating-system }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        operating-system: ["ubuntu-latest"]
-        php-versions: [{{inputs.php_version}}]
-        phpunit-versions: ["latest"]
+    runs-on: "ubuntu-latest"
 
     steps:
       - name: Checkout
@@ -27,7 +20,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{inputs.php_version}}
           extensions: mbstring, intl
           ini-values: post_max_size=256M, max_execution_time=360
           tools: php-cs-fixer, cs2pr

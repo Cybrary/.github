@@ -72,10 +72,35 @@ jobs:
         env:
           PGPASSWORD: testing123
 
-      - name: Artisan, Passport, and phpunit
+      - name: Migrate
         uses: Cybrary/php-generic-action@main
         with:
-         command: php artisan config:clear && php artisan migrate && php artisan db:seed --class=CISeeders && ./vendor/bin/phpunit
+         command: php artisan migrate  && ./vendor/bin/phpunit
+         php_extensions: ${{inputs.php_extensions}}
+         php_version: ${{inputs.php_version}}
+        env:
+          CI: true
+          DB_PORT: ${{ job.services.psql.ports['5432'] }}
+          DB_PASSWORD: testing123
+          DB_SCHEMA: "${{inputs.db_schema}}"
+          DB_CONNECTION: "pgsql"
+          DB_USERNAME: postgres
+      - name: Seed
+        uses: Cybrary/php-generic-action@main
+        with:
+         command: php artisan db:seed --class=CISeeders
+         php_extensions: ${{inputs.php_extensions}}
+         php_version: ${{inputs.php_version}}
+        env:
+          CI: true
+          DB_PORT: ${{ job.services.psql.ports['5432'] }}
+          DB_PASSWORD: testing123
+          DB_SCHEMA: "${{inputs.db_schema}}"
+          DB_CONNECTION: "pgsql"
+          DB_USERNAME: postgres
+      - name: Test
+        with:
+         command: ./vendor/bin/phpunit
          php_extensions: ${{inputs.php_extensions}}
          php_version: ${{inputs.php_version}}
         env:

@@ -38,7 +38,7 @@ jobs:
         id: extcache
         uses: shivammathur/cache-extensions@v1
         with:
-          php-version: ${{ inputs.php-php_version }}
+          php-version: ${{ inputs.php_version }}
           extensions: ${{ inputs.php_extensions }}
           key: ${{ inputs.php_extensions_cache_key }}
       - name: Cache extensions
@@ -73,7 +73,7 @@ jobs:
         id: extcache
         uses: shivammathur/cache-extensions@v1
         with:
-          php-version: ${{ inputs.php-php_version }}
+          php-version: ${{ inputs.php_version }}
           extensions: ${{ inputs.php_extensions }}
           key: ${{ inputs.php_extensions_cache_key }}
       - name: Cache extensions

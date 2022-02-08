@@ -19,4 +19,4 @@ jobs:
         with:
           token: ${{ secrets.repo_tokens }}
           release-type: simple
-          package-name: api-auth
+          package-name: ${{inputs.package_name}}

@@ -46,6 +46,9 @@ jobs:
         ports:
           - 5432
     steps:
+      - name: Github Context
+        run: echo '${{ toJSON(github) }}'
+
       - uses: actions/checkout@v2.4.0
 
       - name: Get Composer Cache Directory

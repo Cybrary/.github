@@ -44,6 +44,7 @@ jobs:
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.REPO_TOKENS }}
+          COMPOSER_AUTH: "{ \"github-oauth\": { \"github.com\": \"${{secrets.REPO_TOKENS}}\" } }"
       - name: FOSSA install and scan
         uses: fossas/fossa-action@v1
         with:

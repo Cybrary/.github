@@ -72,7 +72,7 @@ jobs:
           php_version: ${{inputs.php_version}}
         env:
           CI: true
-          COMPOSER_AUTH: "{\"github-oauth\": {\"github.com\": \"{{secrets.GITHUB_TOKEN}}\"}}"
+          COMPOSER_AUTH: "{\"github-oauth\": {\"github.com\": \"${{ secrets.GITHUB_TOKEN }}\"}}"
 
       - name: Set ENV
         run: cp .env.ci .env

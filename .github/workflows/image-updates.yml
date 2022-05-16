@@ -3,7 +3,7 @@ name: flux-image-updates Auto-PR
 on:
   workflow_call:
     secrets:
-      github_token:
+      gh_token:
         required: true
 
 jobs:
@@ -22,4 +22,4 @@ jobs:
           pr_body: "👑 *An automated PR*"
           pr_reviewer: "@Cybrary/devops"
           pr_draft: false
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.gh_token }}

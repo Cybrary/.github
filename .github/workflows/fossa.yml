@@ -23,7 +23,7 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.4.0
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3

@@ -36,7 +36,7 @@ on:
 
 jobs:
   Build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     services:
       psql:
         image: postgres:12.4-alpine

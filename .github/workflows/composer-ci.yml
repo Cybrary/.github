@@ -46,7 +46,7 @@ jobs:
         ports:
           - 5432
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.2.2
 
       - name: Get Composer Cache Directory
         id: composer-cache

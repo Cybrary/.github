@@ -1,0 +1,53 @@
+name: Deploy Service
+
+on:
+  workflow_call:
+    inputs:
+      gh_environment:
+        required: true
+        type: string
+      commit_hash:
+        required: true
+        type: string
+      service:
+        required: true
+        type: string
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.service }}${{ inputs.gh_environment }}
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.gh_environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.commit_hash }}
+          show-progress: false
+      - uses: google-github-actions/auth@v2
+        with:
+          service_account: ${{ vars.gcp_sa_email }}
+          workload_identity_provider: ${{ vars.gcp_workload_identity_provider }}
+          create_credentials_file: true
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.gcp_project_id }}
+          install_components: kubectl,gke-gcloud-auth-plugin,kustomize,skaffold
+      - uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ vars.k8s_cluster_name }}
+          location: ${{ vars.k8s_cluster_location }}
+          use_auth_provider: true
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: 'True'
+      - name: 'Get GKE Credentials'
+        shell: bash
+        run: |
+          gcloud container clusters get-credentials ${{ vars.k8s_cluster_name }} --zone ${{ vars.k8s_cluster_location }}
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: 'True'
+      - name: Deploy to environment
+        shell: bash
+        run: |
+          echo "Deploying to environment ${{ inputs.gh_environment }}"
+          # skaffold ...

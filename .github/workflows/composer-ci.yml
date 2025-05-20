@@ -13,7 +13,7 @@ on:
       php_version:
         required: true
         type: string
-        default: 7.4
+        default: "8.4"
       php_extensions:
         type: string
         required: false
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       psql:
-        image: postgres:12.4-alpine
+        image: postgres:15-alpine
         env:
           POSTGRES_PASSWORD: testing123
           POSTGRES_DB: jenkins_test
@@ -64,15 +64,17 @@ jobs:
       # - name: Add HTTP basic auth credentials
       #   run: echo '${{ secrets.COMPOSER_AUTH_REPO }}' > $GITHUB_WORKSPACE/auth.json
 
-      - name: Composer Install
-        uses: php-actions/composer@v6
+      - uses: shivammathur/setup-php@v2
         with:
-          command: install
-          php_extensions: ${{inputs.php_extensions}}
-          php_version: ${{inputs.php_version}}
+          tools: composer
+          php-version: ${{inputs.php_version}}
+          extensions: ${{inputs.php_extensions}}
         env:
           CI: true
-          COMPOSER_AUTH: "{ \"github-oauth\": { \"github.com\": \"${{secrets.COMPOSER_AUTH_REPO}}\" } }"
+          GITHUB_TOKEN: ${{secrets.COMPOSER_AUTH_REPO}}
+      - name: Install Dependencies
+        shell: bash
+        run: composer install --no-progress --no-suggest --no-interaction
 
       - name: Set ENV
         run: cp .env.ci .env
@@ -97,11 +99,8 @@ jobs:
 
       - name: Migrate
         if: ${{inputs.run_migrations}}
-        uses: Cybrary/php-generic-action@main
-        with:
-         command: php artisan migrate --seed
-         php_extensions: ${{inputs.php_extensions}}
-         php_version: ${{inputs.php_version}}
+        shell: bash
+        run: php artisan migrate --force
         env:
           CI: true
           DB_PORT: ${{ job.services.psql.ports['5432'] }}
@@ -112,11 +111,9 @@ jobs:
 
       - name: Install Auth
         if: ${{inputs.install_auth}}
-        uses: Cybrary/php-generic-action@main
-        with:
-         command: php artisan passport:install
-         php_extensions: ${{inputs.php_extensions}}
-         php_version: ${{inputs.php_version}}
+
+        shell: bash
+        run: php artisan passport:install
         env:
           CI: true
           DB_PORT: ${{ job.services.psql.ports['5432'] }}
@@ -125,11 +122,8 @@ jobs:
           DB_CONNECTION: "pgsql"
           DB_USERNAME: postgres
       - name: Test
-        uses: Cybrary/php-generic-action@main
-        with:
-         command: ./vendor/bin/phpunit
-         php_extensions: ${{inputs.php_extensions}}
-         php_version: ${{inputs.php_version}}
+        shell: bash
+        run: ./vendor/bin/phpunit
         env:
           CI: true
           DB_PORT: ${{ job.services.psql.ports['5432'] }}

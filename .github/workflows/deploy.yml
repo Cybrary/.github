@@ -48,7 +48,7 @@ jobs:
       - name: 'Get GKE Credentials'
         shell: bash
         run: |
-          gcloud container clusters get-credentials ${{ vars.K8S_CLUSTER_NAME }} --zone ${{ vars.K8S_CLUSTER_LOCATION }}
+          gcloud container clusters get-credentials ${{ vars.K8S_CLUSTER_NAME }} --zone ${{ vars.K8S_CLUSTER_LOCATION }} --dns-endpoint
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: 'True'
       - name: Deploy to environment

@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           ref: ${{ inputs.commit_hash }}
           show-progress: false
       - uses: google-github-actions/auth@v2
@@ -32,6 +32,7 @@ jobs:
           service_account: ${{ vars.GCP_SA_EMAIL }}
           workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
           create_credentials_file: true
+          token_format: access_token
       - uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}

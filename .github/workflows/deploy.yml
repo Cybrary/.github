@@ -26,28 +26,28 @@ jobs:
           show-progress: false
       - uses: google-github-actions/auth@v2
         with:
-          service_account: ${{ vars.gcp_sa_email }}
-          workload_identity_provider: ${{ vars.gcp_workload_identity_provider }}
+          service_account: ${{ vars.GCP_SA_EMAIL }}
+          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
           create_credentials_file: true
       - uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ vars.gcp_project_id }}
+          project_id: ${{ vars.GCP_PROJECT_ID }}
           install_components: kubectl,gke-gcloud-auth-plugin,kustomize,skaffold
       - uses: google-github-actions/get-gke-credentials@v2
         with:
-          cluster_name: ${{ vars.k8s_cluster_name }}
-          location: ${{ vars.k8s_cluster_location }}
+          cluster_name: ${{ vars.K8S_CLUSTER_NAME }}
+          location: ${{ vars.K8S_CLUSTER_LOCATION }}
           use_auth_provider: true
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: 'True'
       - name: 'Get GKE Credentials'
         shell: bash
         run: |
-          gcloud container clusters get-credentials ${{ vars.k8s_cluster_name }} --zone ${{ vars.k8s_cluster_location }}
+          gcloud container clusters get-credentials ${{ vars.K8S_CLUSTER_NAME }} --zone ${{ vars.K8S_CLUSTER_LOCATION }}
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: 'True'
       - name: Deploy to environment
         shell: bash
         run: |
           echo "Deploying to environment ${{ inputs.gh_environment }}"
-          # skaffold ...
+          skaffold deploy -p ${{ inputs.gh_environment }} --images gcr.io/cybrary-204817/${{ inputs.service }}:${{ inputs.commit_hash }} --default-repo gcr.io/cybrary-204817

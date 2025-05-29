@@ -15,7 +15,7 @@ on:
 jobs:
   deploy:
     name: Deploy to ${{ inputs.service }}${{ inputs.gh_environment }}
-    runs-on: configmaps-runner
+    runs-on: ubuntu-latest
     environment: ${{ inputs.gh_environment }}
     permissions:
       contents: "read"

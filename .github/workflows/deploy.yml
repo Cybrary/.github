@@ -33,7 +33,7 @@ jobs:
           workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
           create_credentials_file: true
           token_format: access_token
-          project_id: 'cybrary-gcp-org'
+          project_id: ${{ vars.GCP_PROJECT_ID }}
       - uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}

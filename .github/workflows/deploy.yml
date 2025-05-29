@@ -54,6 +54,8 @@ jobs:
       - name: Deploy to environment
         shell: bash
         run: |
-          echo "Deploying to environment ${{ inputs.gh_environment }}"
+          echo "Deploying to environment ${{ inputs.gh_environment }}"          
           cd deployment
+          echo "${pwd}"
+          ls
           skaffold deploy -p ${{ inputs.gh_environment }} --images gcr.io/cybrary-204817/${{ inputs.service }}:${{ inputs.commit_hash }} --default-repo gcr.io/cybrary-204817

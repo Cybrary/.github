@@ -12,6 +12,10 @@ on:
       service:
         required: true
         type: string
+      tenant:
+        required: false
+        type: string
+        default: ''
 jobs:
   deploy:
     name: Deploy to ${{ inputs.service }}${{ inputs.gh_environment }}
@@ -54,8 +58,11 @@ jobs:
       - name: Deploy to environment
         shell: bash
         run: |
-          echo "Deploying to environment ${{ inputs.gh_environment }}"          
+          PROFILE="${{ inputs.tenant || inputs.gh_environment }}"
+          echo "Deploying profile ${PROFILE} to environment ${{ inputs.gh_environment }}"
           cd deployment
-          echo "${pwd}"
           ls
-          skaffold deploy -p ${{ inputs.gh_environment }} --images gcr.io/cybrary-204817/${{ inputs.service }}:${{ inputs.commit_hash }} --default-repo gcr.io/cybrary-204817
+          skaffold deploy -p "${PROFILE}" --images gcr.io/cybrary-204817/${{ inputs.service }}:${{ inputs.commit_hash }} --default-repo gcr.io/cybrary-204817
+        env:
+          gh_environment: ${{ inputs.gh_environment }}
+          tenant: ${{ inputs.tenant }}

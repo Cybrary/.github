@@ -38,7 +38,7 @@ jobs:
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
           install_components: kubectl,gke-gcloud-auth-plugin,kustomize,skaffold
-      - uses: google-github-actions/get-gke-credentials@v2
+      - uses: google-github-actions/get-gke-credentials@v3
         with:
           cluster_name: ${{ vars.K8S_CLUSTER_NAME }}
           location: ${{ vars.K8S_CLUSTER_LOCATION }}

@@ -34,7 +34,7 @@ jobs:
           create_credentials_file: true
           token_format: access_token
           project_id: ${{ vars.GCP_PROJECT_ID }}
-      - uses: google-github-actions/setup-gcloud@v2
+      - uses: google-github-actions/setup-gcloud@v3
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
           install_components: kubectl,gke-gcloud-auth-plugin,kustomize,skaffold

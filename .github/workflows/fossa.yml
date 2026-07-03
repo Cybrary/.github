@@ -43,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKENS }}
           COMPOSER_AUTH: "{ \"github-oauth\": { \"github.com\": \"${{secrets.COMPOSER_AUTH_REPO}}\" } }"
       - name: FOSSA install and scan
-        uses: fossas/fossa-action@v1
+        uses: fossas/fossa-action@v2
         with:
             api-key: ${{inputs.api_key}}
             run-tests: false
